@@ -8,4 +8,5 @@ from . import views
 
 app_name='strona'
 urlpatterns = [
+    path('packageadd', views.package_add, name='packageadd'),
 ]
