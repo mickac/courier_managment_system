@@ -15,7 +15,9 @@ class PackageType(models.Model):
 class PackageAbstract(models.Model):
     name = models.CharField(max_length=50, unique=True)
     package_type = models.ForeignKey(PackageType, on_delete=models.PROTECT)
-    
+    package_destination = models.CharField(max_length=50, null=True)
+    package_sizes = models.CharField(max_length=50, null=True)
+
     class Meta:
         abstract = True
 
@@ -24,8 +26,6 @@ class PackageAbstract(models.Model):
 
 class Package(PackageAbstract):
     create_date = models.DateTimeField(auto_now_add=True)
-    package_destination = models.CharField(max_length=50)
-    package_sizes = models.CharField(max_length=50)
 
     class Meta(PackageAbstract.Meta):
         ordering = ['create_date']
@@ -39,3 +39,29 @@ class PackageAdd(ModelForm):
     class Meta:
         model = Package
         fields = ['name', 'package_type', 'package_destination', 'package_sizes']
+
+class RemovedPackage(PackageAbstract):
+    name = models.CharField(max_length=50, unique=False)
+    create_date = models.DateTimeField()
+    removal_date = models.DateTimeField(auto_now_add=True)
+    reason = models.CharField(max_length=500)
+
+class PackageChangeAbstract(models.Model):
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
+    create_date = models.DateTimeField()
+    package_destination = models.CharField(max_length=50, null=True)
+    package_sizes = models.CharField(max_length=50, null=True)
+
+    class Meta:
+        abstract = True
+        ordering = ['-create_date']
+
+    def __str__(self):
+        return self.package.name
+
+class PackageChange(PackageChangeAbstract):
+    create_date = models.DateTimeField(auto_now_add=True)   
+
+class OldChange(PackageChangeAbstract):
+    package = models.ForeignKey(RemovedPackage, on_delete=models.CASCADE)

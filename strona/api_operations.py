@@ -7,6 +7,8 @@ from .models import (
     PackageAdd,
     PackageType,
     Package,
+    RemovedPackage,
+    PackageChange
 )
 
 def add_package(data):
@@ -40,26 +42,19 @@ def remove_package(data):
 
     removed_package = RemovedPackage(
         name=package.name,
-        device_type=package.package_type,
-        device_login=device.device_login,
-        device_password=device.device_password,
-        device_ipv4=device.device_ipv4,
-        running_config=device.running_config,
-        startup_config=device.startup_config,
-        create_date=device.create_date
+        package_type=package.package_type,
+        package_sizes=package.package_sizes,
+        package_destination=package.package_destination,
+        create_date=package.create_date,
     )
     removed_package.save()
     changes = PackageChange.objects.all().filter(package=package)
     for change in changes:
         old_change = OldChange(
             user=change.user,
-            device=removed_device,
+            package=removed_package,
             create_date=change.create_date,
-            configuration_type=change.configuration_type,
-            partial_configuration=change.partial_configuration,
         )
         old_change.save()
         change.delete()
-    device.delete()
-
-    return etree.Element("ok")
+    package.delete()

@@ -14,7 +14,8 @@ from django.db.models import Q
 
 from .models import(
     PackageAdd,
-    Package
+    Package,
+    RemovedPackage
 )
 from .api_operations import(
     add_package,
@@ -48,20 +49,6 @@ def package_add(request):
         return render(request, 'package_add.html', {'form':form})            
     return redirect('strona:packagelist')
 
-def package_list(request):
-    package_list = Package.objects.all()
-    page = request.GET.get('page', 1)
-
-    paginator = Paginator(package_list, 9)
-    try:
-        packages = paginator.page(page)
-    except PageNotAnInteger:
-        packages = paginator.page(1)
-    except EmptyPage:
-        packages = paginator.page(paginator.num_pages)
-
-    return render(request, 'package_list.html', { 'packages': packages })
-
 def delete(request, pk):
     if request.user.is_superuser:
         try:
@@ -72,6 +59,45 @@ def delete(request, pk):
             data.append(name)
             remove_package(data)
             return redirect('strona:packagelist')
+        except Exception as exception:
+            error = "Something went wrong. If error occurs often please send error message contained below to administator."
+            error_message = str(exception)
+            return render(request, 'error.html', {'em':error_message, 'e':error})
+
+def package_list(request):
+    try:
+        package_list = Package.objects.all()
+        page = request.GET.get('page', 1)
+
+        paginator = Paginator(package_list, 9)
+        try:
+            packages = paginator.page(page)
+        except PageNotAnInteger:
+            packages = paginator.page(1)
+        except EmptyPage:
+            packages = paginator.page(paginator.num_pages)
+
+        return render(request, 'package_list.html', { 'packages': packages })
+    except Exception as exception:
+        error = "Something went wrong. If error occurs often please send error message contained below to administator."
+        error_message = str(exception)
+        return render(request, 'error.html', {'em':error_message, 'e':error})
+
+def removedpackages_list(request):
+     if request.user.is_superuser:
+        try: 
+            package_list = RemovedPackage.objects.all()
+            page = request.GET.get('page', 1)
+
+            paginator = Paginator(package_list, 2)
+            try:
+                packages = paginator.page(page)
+            except PageNotAnInteger:
+                packages = paginator.page(1)
+            except EmptyPage:
+                packages = paginator.page(paginator.num_pages)
+
+            return render(request, 'removed_packages.html', {'packages':packages})
         except Exception as exception:
             error = "Something went wrong. If error occurs often please send error message contained below to administator."
             error_message = str(exception)
@@ -96,3 +122,23 @@ def searchresultview(request):
         packages = paginator.page(paginator.num_pages)
 
     return render(request, 'search_results.html', { 'searchresults': packages })
+
+def removedpackages_searchlist(request):
+    query = request.GET.get('q')
+    object_list = RemovedPackage.objects.filter(
+        Q(name__icontains=query) & Q(package_type__type_name__icontains=query)
+    )
+    
+    page = request.GET.get('page', 1)
+    paginator = Paginator(object_list, 9)
+
+    try:
+        packages = paginator.page(page)
+        for package in packages:
+            print(package, packages)
+    except PageNotAnInteger:
+        packages = paginator.page(1)
+    except EmptyPage:
+        packages = paginator.page(paginator.num_pages)
+    print(packages)
+    return render(request, 'search_removedpackages.html', { 'searchresults': packages })

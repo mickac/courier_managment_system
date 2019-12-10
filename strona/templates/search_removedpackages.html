@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    {% if user.is_superuser %}
+    {{ error }}
+    <div class="row">
+        <div class="col-sm text-left">
+            <h3>List of devices and their changes:</h3>
+        </div>
+
+        <div class="col-sm text-right">
+            <script>
+                $(document).ready(function () {
+                    $("input").on('keyup', function () {
+                        $.get("{% url 'strona:removedpackagesearch' %}", { q: $(this).val() }, function (data, status) {
+                            doc = new DOMParser().parseFromString(data, "text/html");
+                            packages = doc.getElementById("packages").innerHTML;
+                            pagination = doc.getElementById("pagination").innerHTML;
+                            $("#packages").empty();
+                            $("#pagination").empty();
+                            $("#packages").append(packages);
+                            $("#pagination").append(pagination);
+                        });
+                    });
+                });
+            </script>
+            <input type="text" placeholder="Search...">    
+        </div>
+    </div>
+
+    <div class="row" id="packages">
+        {% if searchresults %}
+            <div class="col-sm">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                    <th>No.</th>
+                    <th>Package name</th>
+                    <th>Package type</th>
+                    <th>Reason</th>
+                    <th>Date of removal</th>
+                    <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for package in searchresults %}
+                    <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ package.name }}</td>
+                    <td>{{ package.package_type }}</td>
+                    <td>{{ package.reason }}</td>
+                    <td>{{ package.removal_date }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            
+            <div class="row justify-content-center" id="pagination">
+                    {% if searchresults.has_other_pages %}
+                    <div>
+                        {% if searchresults.has_previous %}
+                            <a href="?page={{ searchresults.previous_page_number }}" class="btn btn-primary btn-lg">&lt;</a>
+                        {% else %}
+                            <button class="btn btn-primary btn-lg disabled">&lt;</button>
+                        {% endif %}
+                        {% for i in searchresults.paginator.page_range %}
+                            {% if searchresults.number == i %}
+                            <button class="active btn btn-secondary btn-md"> {{ i }} <span class="sr-only">(current)</span></button>
+                            {% else %}
+                            <a href="?page={{ i }}" class="btn btn-secondary btn-md"> {{ i }} </a>
+                            {% endif %}
+                        {% endfor %}
+                        {% if searchresults.has_next %}
+                            <a href="?page={{ packages.next_page_number }}" class="btn btn-primary btn-lg">&gt;</a>
+                        {% else %}
+                            <button class="btn btn-primary btn-lg disabled">&gt;</button>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+    {% else %}
+    <div class="col-sm">
+        <p>There are no removed packages with searched elements found.</p>
+    </div>
+    {% endif %}
+    </div>
+    {% else %}
+    <h4>Please login to see content.</h4>
+    {% endif %}
+</div>
+{% endblock %}

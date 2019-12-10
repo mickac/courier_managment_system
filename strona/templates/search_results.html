@@ -89,7 +89,7 @@
         {% if searchresults.has_other_pages %}
         <div>
             {% if searchresults.has_previous %}
-                <a href="devicelist?page={{ searchresults.previous_page_number }}" class="btn btn-primary btn-lg">&lt;</a>
+                <a href="?page={{ searchresults.previous_page_number }}" class="btn btn-primary btn-lg">&lt;</a>
             {% else %}
                 <button class="btn btn-primary btn-lg disabled">&lt;</button>
             {% endif %}
@@ -97,11 +97,11 @@
                 {% if searchresults.number == i %}
                 <button class="active btn btn-secondary btn-md"> {{ i }} <span class="sr-only">(current)</span></button>
                 {% else %}
-                <a href="devicelist?page={{ i }}" class="btn btn-secondary btn-md"> {{ i }} </a>
+                <a href="?page={{ i }}" class="btn btn-secondary btn-md"> {{ i }} </a>
                 {% endif %}
             {% endfor %}
             {% if searchresults.has_next %}
-                <a href="devicelist?page={{ searchresults.next_page_number }}" class="btn btn-primary btn-lg">&gt;</a>
+                <a href="?page={{ searchresults.next_page_number }}" class="btn btn-primary btn-lg">&gt;</a>
             {% else %}
                 <button class="btn btn-primary btn-lg disabled">&gt;</button>
             {% endif %}
