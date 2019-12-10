@@ -33,8 +33,9 @@
                 {% if forloop.counter0|divisibleby:3 and forloop.counter != 1%}</div><div class="col-sm">{% endif %}           
                     <ul>
                         <button class="btn btn-primary btn-block" type="button" data-toggle="modal" href="#Modal{{ package.id }}">
-                            Name of package: <i>{{ package.name }}</i><br> 
-                            Type of package: <i>{{ package.package_type }}</i><br>
+                            <b>Name of package:</b> <i>{{ package.name }}</i><br> 
+                            <b>Type of package:</b> <i>{{ package.package_type }}</i><br>
+                            <b>Destination of package:</b><br> <i>{{ package.package_destination }}</i>
                         </button> 
                         <div id="Modal{{ package.id }}" class="modal hide fade" tabindex="-1">
                             <div class="modal-dialog modal-lg">
@@ -46,7 +47,8 @@
                                         <div class="form-group">
                                                 <label for="date">Package added on <b>{{ package.create_date }}</b>.</label><br>
                                                 <label for="type">Package type is <b>{{ package.package_type }}</b>.</label><br>
-                                                <label for="size">Package size is <b>{{ package.package_sizes }}</b>.</label>
+                                                <label for="size">Package size is <b>{{ package.package_sizes }}</b>.</label><br>
+                                                <label for="destination">Package destination is: <br><b>{{ package.package_destination }}</b></label>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
