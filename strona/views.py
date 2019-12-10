@@ -10,6 +10,7 @@ from django.core.paginator import(
     EmptyPage,
     PageNotAnInteger
 )
+from django.db.models import Q
 
 from .models import(
     PackageAdd,
@@ -65,7 +66,7 @@ def delete(request, pk):
     if request.user.is_superuser:
         try:
             package_id = pk
-            get_object_or_404(Device, pk=package_id)
+            get_object_or_404(Package, pk=package_id)
             name = Package.objects.values_list('name', flat=True).get(pk=package_id)
             data = []
             data.append(name)
