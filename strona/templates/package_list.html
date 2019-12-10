@@ -40,12 +40,13 @@
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">     
-                                        <h4 class="modal-title">Package parameters <i>{{ package.name }}</i></h4>
+                                        <h4 class="modal-title">Package <i>{{ package.name }}</i> details.</h4>
                                     </div>
                                     <div class="modal-body">
                                         <div class="form-group">
+                                                <label for="date">Package added on <b>{{ package.create_date }}</b>.</label><br>
                                                 <label for="type">Package type is <b>{{ package.package_type }}</b>.</label><br>
-                                                <label for="date">Package added on <b>{{ package.create_date }}</b></label>
+                                                <label for="size">Package size is <b>{{ package.package_sizes }}</b>.</label>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
