@@ -52,7 +52,11 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
+                                        {% if user.is_authenticated %}
+                                        <button class="btn btn-secondary" type="button" data-toggle="modal" href="#DeliveredModal{{ package.id }}"><i>{{ package.name }} delivered.</i></button>
+                                        {% endif %}
                                         {% if user.is_superuser %}
+                                        <button class="btn btn-primary" type="button" data-toggle="modal" href="#EditModal{{ package.id }}">Edit package <i>{{ package.name }}</i></button>
                                         <button class="btn btn-primary" type="button" data-toggle="modal" href="#DeleteModal{{ package.id }}">Delete package <i>{{ package.name }}</i></button>
                                         {% endif %}
                                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

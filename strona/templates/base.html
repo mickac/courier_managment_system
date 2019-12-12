@@ -41,6 +41,11 @@
 								<a class="dropdown-item" href="{% url 'strona:removedpackage' %}">Removed packages</a>
 							</div>
 					</li>
+					{% endif %}
+					{% if user.is_authenticated %}
+					<li class="nav-item">
+						<a class="nav-link" href="{% url 'strona:packagelist' %}">Delivered packages</a>
+					</li>
 					{% endif %}					
 				</ul>
 				<ul class="navbar-nav">

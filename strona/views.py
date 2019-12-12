@@ -140,5 +140,5 @@ def removedpackages_searchlist(request):
         packages = paginator.page(1)
     except EmptyPage:
         packages = paginator.page(paginator.num_pages)
-    print(packages)
+        
     return render(request, 'search_removedpackages.html', { 'searchresults': packages })
