@@ -8,7 +8,8 @@ from .models import (
     PackageType,
     Package,
     RemovedPackage,
-    PackageChange
+    PackageChange,
+    DeliveredPackage
 )
 
 def add_package(data):
@@ -39,7 +40,6 @@ def remove_package(data):
         package_name = data[0]
 
     package = Package.objects.get(name=package_name)
-
     removed_package = RemovedPackage(
         name=package.name,
         package_type=package.package_type,
@@ -48,6 +48,7 @@ def remove_package(data):
         create_date=package.create_date,
     )
     removed_package.save()
+    
     changes = PackageChange.objects.all().filter(package=package)
     for change in changes:
         old_change = OldChange(
@@ -57,4 +58,21 @@ def remove_package(data):
         )
         old_change.save()
         change.delete()
+    package.delete()
+
+def deliver_package(data):
+    try:
+        package_name = data[0].text
+    except AttributeError:
+        package_name = data[0]
+
+    package = Package.objects.get(name=package_name)
+    delivered_package = DeliveredPackage(
+        name=package.name,
+        package_type=package.package_type,
+        package_sizes=package.package_sizes,
+        package_destination=package.package_destination,
+        create_date=package.create_date,
+    )
+    delivered_package.save()
     package.delete()

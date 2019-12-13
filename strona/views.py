@@ -15,11 +15,13 @@ from django.db.models import Q
 from .models import(
     PackageAdd,
     Package,
-    RemovedPackage
+    RemovedPackage,
+    DeliveredPackage
 )
 from .api_operations import(
     add_package,
-    remove_package
+    remove_package,
+    deliver_package
 )
 
 class IndexView(TemplateView):
@@ -42,11 +44,29 @@ def package_add(request):
                 try:
                     add_package(data)
                     return redirect('strona:packagelist')
-                except Exception as e:
-                    return render(request, 'package_add.html', {'e':e, 'form':form})
+                except Exception as exception:
+                    error = "Something went wrong. If error occurs often please send error message contained below to administator."
+                    error_message = str(exception)
+                    return render(request, 'error.html', {'em':error_message, 'e':error})
         else:
             form = PackageAdd()
         return render(request, 'package_add.html', {'form':form})            
+    return redirect('strona:packagelist')
+
+def package_delivered(request, pk):
+    if request.user.is_authenticated:
+        try:
+            package_id = pk
+            get_object_or_404(Package, pk=package_id)
+            name = Package.objects.values_list('name', flat=True).get(pk=package_id)
+            data = []
+            data.append(name)
+            deliver_package(data)
+            return redirect('strona:deliveredlist')
+        except Exception as exception:
+            error = "Something went wrong. If error occurs often please send error message contained below to administator."
+            error_message = str(exception)
+            return render(request, 'error.html', {'em':error_message, 'e':error})        
     return redirect('strona:packagelist')
 
 def delete(request, pk):
@@ -98,6 +118,26 @@ def removedpackages_list(request):
                 packages = paginator.page(paginator.num_pages)
 
             return render(request, 'removed_packages.html', {'packages':packages})
+        except Exception as exception:
+            error = "Something went wrong. If error occurs often please send error message contained below to administator."
+            error_message = str(exception)
+            return render(request, 'error.html', {'em':error_message, 'e':error})
+
+def deliveredpackages_list(request):
+     if request.user.is_superuser:
+        try: 
+            package_list = DeliveredPackage.objects.all()
+            page = request.GET.get('page', 1)
+
+            paginator = Paginator(package_list, 1)
+            try:
+                packages = paginator.page(page)
+            except PageNotAnInteger:
+                packages = paginator.page(1)
+            except EmptyPage:
+                packages = paginator.page(paginator.num_pages)
+
+            return render(request, 'delivered_packages.html', {'packages':packages})
         except Exception as exception:
             error = "Something went wrong. If error occurs often please send error message contained below to administator."
             error_message = str(exception)
