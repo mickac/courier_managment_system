@@ -129,7 +129,7 @@ def deliveredpackages_list(request):
             package_list = DeliveredPackage.objects.all()
             page = request.GET.get('page', 1)
 
-            paginator = Paginator(package_list, 1)
+            paginator = Paginator(package_list, 5)
             try:
                 packages = paginator.page(page)
             except PageNotAnInteger:
@@ -147,12 +147,12 @@ def searchresultview(request):
     if request.user.is_authenticated:
         try:
             query = request.GET.get('q')
-            object_list = Package.objects.filter(
+            package_list = Package.objects.filter(
                 Q(name__icontains=query) | Q(package_type__type_name__icontains=query) | Q(package_destination__icontains=query) | Q(package_sizes__icontains=query)
             )
             
             page = request.GET.get('page', 1)
-            paginator = Paginator(object_list, 9)
+            paginator = Paginator(package_list, 9)
 
             try:
                 packages = paginator.page(page)
@@ -173,12 +173,12 @@ def removedpackages_searchlist(request):
     if request.user.is_superuser:
         try:
             query = request.GET.get('q')
-            object_list = RemovedPackage.objects.filter(
+            package_list = RemovedPackage.objects.filter(
                 Q(name__icontains=query) | Q(package_type__type_name__icontains=query) | Q(package_destination__icontains=query) | Q(package_sizes__icontains=query)
             )
             
             page = request.GET.get('page', 1)
-            paginator = Paginator(object_list, 5)
+            paginator = Paginator(package_list, 5)
 
             try:
                 packages = paginator.page(page)

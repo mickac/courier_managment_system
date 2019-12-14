@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container">
-    {% if user.is_authenticated %}
+{% if user.is_authenticated %}
     <div class="row">
             <div class="col-sm text-left">
                 <h3>List of packages:</h3>
@@ -27,92 +27,89 @@
         </div>
     {{ error }}
     <div class="row" id="packages">
-            {% if searchresults %}
-            <div class="col-sm">
-                {% for package in searchresults %}
-                {% if forloop.counter0|divisibleby:3 and forloop.counter != 1%}</div><div class="col-sm">{% endif %}           
-                    <ul>
-                        <button class="btn btn-primary btn-block" type="button" data-toggle="modal" href="#Modal{{ package.id }}">
-                            <b>Name of package:</b> <i>{{ package.name }}</i><br> 
-                            <b>Type of package:</b> <i>{{ package.package_type }}</i><br>
-                            <b>Destination of package:</b><br> <i>{{ package.package_destination }}</i>
-                        </button> 
-                        <div id="Modal{{ package.id }}" class="modal hide fade" tabindex="-1">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">     
-                                        <h4 class="modal-title">Package <i>{{ package.name }}</i> details.</h4>
+    {% if searchresults %}
+        <div class="col-sm">
+            {% for package in searchresults %}
+            {% if forloop.counter0|divisibleby:3 and forloop.counter != 1%}</div><div class="col-sm">{% endif %}           
+                <ul>
+                    <button class="btn btn-primary btn-block" type="button" data-toggle="modal" href="#Modal{{ package.id }}">
+                        <b>Name of package:</b> <i>{{ package.name }}</i><br> 
+                        <b>Type of package:</b> <i>{{ package.package_type }}</i><br>
+                        <b>Destination of package:</b><br> <i>{{ package.package_destination }}</i>
+                    </button> 
+                    <div id="Modal{{ package.id }}" class="modal hide fade" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">     
+                                    <h4 class="modal-title">Package <i>{{ package.name }}</i> details.</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                            <label for="date">Package added on <b>{{ package.create_date }}</b>.</label><br>
+                                            <label for="type">Package type is <b>{{ package.package_type }}</b>.</label><br>
+                                            <label for="size">Package size is <b>{{ package.package_sizes }}</b>.</label><br>
+                                            <label for="destination">Package destination is: <br><b>{{ package.package_destination }}</b></label>
                                     </div>
-                                    <div class="modal-body">
-                                        <div class="form-group">
-                                                <label for="date">Package added on <b>{{ package.create_date }}</b>.</label><br>
-                                                <label for="type">Package type is <b>{{ package.package_type }}</b>.</label><br>
-                                                <label for="size">Package size is <b>{{ package.package_sizes }}</b>.</label><br>
-                                                <label for="destination">Package destination is: <br><b>{{ package.package_destination }}</b></label>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        {% if user.is_superuser %}
-                                        <button class="btn btn-primary" type="button" data-toggle="modal" href="#DeleteModal{{ package.id }}">Delete package <i>{{ package.name }}</i></button>
-                                        {% endif %}
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    {% if user.is_superuser %}
+                                    <button class="btn btn-primary" type="button" data-toggle="modal" href="#DeleteModal{{ package.id }}">Delete package <i>{{ package.name }}</i></button>
+                                    {% endif %}
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                 </div>
                             </div>
                         </div>
-                        {% if user.is_superuser %}
-                        <div id="DeleteModal{{ package.id }}" class="modal hide fade" data-backdrop="false" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-body">     
-                                        <h4 class="modal-title">Are you sure to delete package <i>{{ package.name }}</i>?</h4>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <a class="btn btn-danger btn-default" href="{% url 'strona:delete' package.id %}">Yes</a>
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                                    </div>
+                    </div>
+                    {% if user.is_superuser %}
+                    <div id="DeleteModal{{ package.id }}" class="modal hide fade" data-backdrop="false" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-body">     
+                                    <h4 class="modal-title">Are you sure to delete package <i>{{ package.name }}</i>?</h4>
+                                </div>
+                                <div class="modal-footer">
+                                    <a class="btn btn-danger btn-default" href="{% url 'strona:delete' package.id %}">Yes</a>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
                                 </div>
                             </div>
                         </div>
-                        {% endif %}    
-                        <br><br>
-                    </ul>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="col-sm">
-                <p>There are no packages with searched elements found.</p>
-            </div>
+                    </div>
+                    {% endif %}    
+                    <br><br>
+                </ul>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="col-sm">
+            <p>There are no packages with searched elements found.</p>
+        </div>
     {% endif %}    
     </div>
     <div class="row justify-content-center" id="pagination">
-        {% if searchresults.has_other_pages %}
-        <div>
-            {% if searchresults.has_previous %}
-                <a href="?page={{ searchresults.previous_page_number }}" class="btn btn-primary btn-lg">&lt;</a>
+    {% if searchresults.has_other_pages %}
+    <div>
+        {% if searchresults.has_previous %}
+            <a href="?page={{ searchresults.previous_page_number }}" class="btn btn-primary btn-lg">&lt;</a>
+        {% else %}
+            <button class="btn btn-primary btn-lg disabled">&lt;</button>
+        {% endif %}
+        {% for i in searchresults.paginator.page_range %}
+            {% if searchresults.number == i %}
+            <button class="active btn btn-secondary btn-md"> {{ i }} <span class="sr-only">(current)</span></button>
             {% else %}
-                <button class="btn btn-primary btn-lg disabled">&lt;</button>
+            <a href="?page={{ i }}" class="btn btn-secondary btn-md"> {{ i }} </a>
             {% endif %}
-            {% for i in searchresults.paginator.page_range %}
-                {% if searchresults.number == i %}
-                <button class="active btn btn-secondary btn-md"> {{ i }} <span class="sr-only">(current)</span></button>
-                {% else %}
-                <a href="?page={{ i }}" class="btn btn-secondary btn-md"> {{ i }} </a>
-                {% endif %}
-            {% endfor %}
-            {% if searchresults.has_next %}
-                <a href="?page={{ searchresults.next_page_number }}" class="btn btn-primary btn-lg">&gt;</a>
-            {% else %}
-                <button class="btn btn-primary btn-lg disabled">&gt;</button>
-            {% endif %}
-        </div>
+        {% endfor %}
+        {% if searchresults.has_next %}
+            <a href="?page={{ searchresults.next_page_number }}" class="btn btn-primary btn-lg">&gt;</a>
+        {% else %}
+            <button class="btn btn-primary btn-lg disabled">&gt;</button>
         {% endif %}
     </div>
-    
-
-
-    {% else %}
-    <h4>Please login to see content.</h4>
     {% endif %}
+    </div>
+{% else %}
+    <h4>Please login to see content.</h4>
+{% endif %}
 </div>
 {% endblock %}
