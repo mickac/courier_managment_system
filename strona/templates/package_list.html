@@ -69,11 +69,11 @@
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-body">     
-                                        <h4 class="modal-title">Are you sure to delete package <i>{{ package.name }}</i>?</h4>
+                                        <h4 class="modal-title">Are you sure to delete package <i>{{ package.name }}</i>?</h4><br>
                                     </div>
                                     <div class="modal-footer">
-                                        <a class="btn btn-danger btn-default" href="{% url 'strona:delete' package.id %}">Yes</a>
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                                        <a class="btn btn-danger btn-default" href="{% url 'strona:delete' package.id %}">Delete</a>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                                     </div>
                                 </div>
                             </div>

@@ -109,7 +109,7 @@ def removedpackages_list(request):
             package_list = RemovedPackage.objects.all()
             page = request.GET.get('page', 1)
 
-            paginator = Paginator(package_list, 2)
+            paginator = Paginator(package_list, 5)
             try:
                 packages = paginator.page(page)
             except PageNotAnInteger:
@@ -144,41 +144,53 @@ def deliveredpackages_list(request):
             return render(request, 'error.html', {'em':error_message, 'e':error})
 
 def searchresultview(request):
-    query = request.GET.get('q')
-    object_list = Package.objects.filter(
-        Q(name__icontains=query) | Q(package_type__type_name__icontains=query)
-    )
-    
-    page = request.GET.get('page', 1)
-    paginator = Paginator(object_list, 9)
+    if request.user.is_authenticated:
+        try:
+            query = request.GET.get('q')
+            object_list = Package.objects.filter(
+                Q(name__icontains=query) | Q(package_type__type_name__icontains=query) | Q(package_destination__icontains=query) | Q(package_sizes__icontains=query)
+            )
+            
+            page = request.GET.get('page', 1)
+            paginator = Paginator(object_list, 9)
 
-    try:
-        packages = paginator.page(page)
-        for package in packages:
-            print(package, packages)
-    except PageNotAnInteger:
-        packages = paginator.page(1)
-    except EmptyPage:
-        packages = paginator.page(paginator.num_pages)
+            try:
+                packages = paginator.page(page)
+                for package in packages:
+                    print(package, packages)
+            except PageNotAnInteger:
+                packages = paginator.page(1)
+            except EmptyPage:
+                packages = paginator.page(paginator.num_pages)
 
-    return render(request, 'search_results.html', { 'searchresults': packages })
+            return render(request, 'search_results.html', { 'searchresults': packages })
+        except Exception as exception:
+            error = "Something went wrong. If error occurs often please send error message contained below to administator."
+            error_message = str(exception)
+            return render(request, 'error.html', {'em':error_message, 'e':error})
 
 def removedpackages_searchlist(request):
-    query = request.GET.get('q')
-    object_list = RemovedPackage.objects.filter(
-        Q(name__icontains=query) & Q(package_type__type_name__icontains=query)
-    )
-    
-    page = request.GET.get('page', 1)
-    paginator = Paginator(object_list, 9)
+    if request.user.is_superuser:
+        try:
+            query = request.GET.get('q')
+            object_list = RemovedPackage.objects.filter(
+                Q(name__icontains=query) | Q(package_type__type_name__icontains=query) | Q(package_destination__icontains=query) | Q(package_sizes__icontains=query)
+            )
+            
+            page = request.GET.get('page', 1)
+            paginator = Paginator(object_list, 5)
 
-    try:
-        packages = paginator.page(page)
-        for package in packages:
-            print(package, packages)
-    except PageNotAnInteger:
-        packages = paginator.page(1)
-    except EmptyPage:
-        packages = paginator.page(paginator.num_pages)
-        
-    return render(request, 'search_removedpackages.html', { 'searchresults': packages })
+            try:
+                packages = paginator.page(page)
+                for package in packages:
+                    print(package, packages)
+            except PageNotAnInteger:
+                packages = paginator.page(1)
+            except EmptyPage:
+                packages = paginator.page(paginator.num_pages)
+                
+            return render(request, 'search_removedpackages.html', { 'searchresults': packages })
+        except Exception as exception:
+            error = "Something went wrong. If error occurs often please send error message contained below to administator."
+            error_message = str(exception)
+            return render(request, 'error.html', {'em':error_message, 'e':error})
