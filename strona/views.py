@@ -194,3 +194,29 @@ def removedpackages_searchlist(request):
             error = "Something went wrong. If error occurs often please send error message contained below to administator."
             error_message = str(exception)
             return render(request, 'error.html', {'em':error_message, 'e':error})
+
+def deliveredpackages_searchlist(request):
+    if request.user.is_authenticated:
+        try:
+            query = request.GET.get('q')
+            package_list = DeliveredPackage.objects.filter(
+                Q(name__icontains=query) | Q(package_type__type_name__icontains=query) | Q(package_destination__icontains=query) | Q(package_sizes__icontains=query)
+            )
+            
+            page = request.GET.get('page', 1)
+            paginator = Paginator(package_list, 5)
+
+            try:
+                packages = paginator.page(page)
+                for package in packages:
+                    print(package, packages)
+            except PageNotAnInteger:
+                packages = paginator.page(1)
+            except EmptyPage:
+                packages = paginator.page(paginator.num_pages)
+                
+            return render(request, 'search_deliveredpackages.html', { 'searchresults': packages })
+        except Exception as exception:
+            error = "Something went wrong. If error occurs often please send error message contained below to administator."
+            error_message = str(exception)
+            return render(request, 'error.html', {'em':error_message, 'e':error})            

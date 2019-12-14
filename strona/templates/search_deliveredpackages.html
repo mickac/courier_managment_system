@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
+{% if user.is_authenticated %}
 <div class="container">
-    {% if user.is_superuser %}
     <div class="row">
         <div class="col-sm text-left">
-            <h3>List of removed packages:</h3>
+            <h3>List of delivered packages:</h3>
         </div>
         <div class="col-sm text-right">
             <script>
                 $(document).ready(function () {
                     $("input").on('keyup', function () {
-                        $.get("{% url 'strona:removedpackagesearch' %}", { q: $(this).val() }, function (data, status) {
+                        $.get("{% url 'strona:deliveredpackagesearch' %}", { q: $(this).val() }, function (data, status) {
                             doc = new DOMParser().parseFromString(data, "text/html");
                             packages = doc.getElementById("packages").innerHTML;
                             pagination = doc.getElementById("pagination").innerHTML;
@@ -36,17 +36,17 @@
                     <th>Package name</th>
                     <th>Package type</th>
                     <th>Create date</th>
-                    <th>Date of removal</th>
+                    <th>Deliver date</th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for package in searchresults %}
                     <tr>
-                <!--   <td>{{ forloop.counter }}.</td> --> 
+                <!--    <td>{{ forloop.counter }}.</td>  -->
                     <td>{{ package.name }}</td>
                     <td>{{ package.package_type }}</td>
                     <td>{{ package.create_date }}</td>
-                    <td>{{ package.removal_date }}</td>
+                    <td>{{ package.delivered_date }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -54,7 +54,7 @@
         </div> 
     {% else %}
         <div class="col-sm">
-            <p>There are no removed packages with searched elements found.</p>
+            <p>There are no delivered packages with searched elements found.</p>
         </div>
     {% endif %}   
     </div>

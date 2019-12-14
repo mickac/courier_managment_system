@@ -16,4 +16,5 @@ urlpatterns = [
     path('<int:pk>/package_delivered', views.package_delivered, name='package_delivered'),
     path('removedpackage', views.removedpackages_list, name='removedpackage'),
     path('removedpackagesearch', views.removedpackages_searchlist, name='removedpackagesearch'),
+    path('deliveredpackagesearch', views.deliveredpackages_searchlist, name='deliveredpackagesearch'),
 ]
