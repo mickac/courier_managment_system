@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if user.is_superuser %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm text-left">
+            <h3>List of changes on packages:</h3>
+        </div>
+        <div class="col-sm text-right">
+            <script>
+                $(document).ready(function () {
+                    $("input").on('keyup', function () {
+                        $.get("{% url 'strona:changedpackagesearch' %}", { q: $(this).val() }, function (data, status) {
+                            doc = new DOMParser().parseFromString(data, "text/html");
+                            packages = doc.getElementById("packages").innerHTML;
+                            pagination = doc.getElementById("pagination").innerHTML;
+                            $("#packages").empty();
+                            $("#pagination").empty();
+                            $("#packages").append(packages);
+                            $("#pagination").append(pagination);
+                        });
+                    });
+                });
+            </script>
+            <input type="text" placeholder="Search...">    
+        </div>
+    </div>
+    {{ error }}
+    <div class="row" id="packages">
+        {% if searchresults %}
+        <div class="col-sm">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                <!--    <th>No.</th> -->
+                    <th>Package name</th>
+                    <th>Package type</th>
+                    <th>Package destination</th>
+                    <th>Package sizes</th>
+                    <th>Edit date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for package in searchresults %}
+                    <tr>
+                <!--    <td>{{ forloop.counter }}.</td>  -->
+                    <td>{{ package.package_name }}</td>
+                    <td>{{ package.package_type }}</td>
+                    <td>{{ package.package_destination }}</td>
+                    <td>{{ package.package_sizes }}</td>
+                    <td>{{ package.create_date }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div> 
+    {% else %}
+        <div class="col-sm">
+            <p>There are no changes on packages with searched elements found.</p>
+        </div>
+    {% endif %}   
+    </div>
+</div>
+<div class="container">
+    <div class="row justify-content-center" id="pagination">
+        {% if searchresults.has_other_pages %}
+        <div>
+            {% if searchresults.has_previous %}
+                <a href="?page={{ searchresults.previous_page_number }}" class="btn btn-primary btn-lg">&lt;</a>
+            {% else %}
+                <button class="btn btn-primary btn-lg disabled">&lt;</button>
+            {% endif %}
+            {% for i in searchresults.paginator.page_range %}
+                {% if searchresults.number == i %}
+                <button class="active btn btn-secondary btn-md"> {{ i }} <span class="sr-only">(current)</span></button>
+                {% else %}
+                <a href="?page={{ i }}" class="btn btn-secondary btn-md"> {{ i }} </a>
+                {% endif %}
+            {% endfor %}
+            {% if searchresults.has_next %}
+                <a href="?page={{ searchresults.next_page_number }}" class="btn btn-primary btn-lg">&gt;</a>
+            {% else %}
+                <button class="btn btn-primary btn-lg disabled">&gt;</button>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<div class="container">
+    <h4>Please login to see content.</h4>
+</div>
+{% endif %}
+{% endblock %}

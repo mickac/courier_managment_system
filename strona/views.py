@@ -14,9 +14,11 @@ from django.db.models import Q
 
 from .models import(
     PackageAdd,
+    PackageEdit,
     Package,
     RemovedPackage,
-    DeliveredPackage
+    DeliveredPackage,
+    PackageChange
 )
 from .api_operations import(
     add_package,
@@ -52,6 +54,41 @@ def package_add(request):
             form = PackageAdd()
         return render(request, 'package_add.html', {'form':form})            
     return redirect('strona:packagelist')
+
+def edit(request, pk):
+    try:
+        if request.user.is_superuser:
+            package = get_object_or_404(Package, pk=pk)
+            if request.method == "POST":
+                form = PackageEdit(request.POST, instance=package)
+                if form.is_valid():
+                    package_name = package.name
+                    package_type = form.cleaned_data['package_type']
+                    package_destination = form.cleaned_data['package_destination']
+                    package_sizes = form.cleaned_data['package_sizes']
+                    pack = form.save(commit=False)
+                    pack.package_type = package_type
+                    pack.package_destination = package_destination
+                    pack.package_sizes = package_sizes
+                    #pack.create_date = timezone.now()
+                    pack.save()
+                    packageedit = PackageChange(
+                        user = request.user,
+                        package_name = package_name,
+                        package_id = pk,
+                        package_type = package_type,
+                        package_destination = package_destination,
+                        package_sizes = package_sizes,
+                    )
+                    packageedit.save()
+                    return redirect('strona:packagelist')
+            else:
+                form = PackageEdit(instance=package)
+            return render(request, 'package_edit.html', {'form':form}) 
+    except Exception as exception:
+        error = "Something went wrong. If error occurs often please send error message contained below to administator."
+        error_message = str(exception)
+        return render(request, 'error.html', {'em':error_message, 'e':error})
 
 def package_delivered(request, pk):
     if request.user.is_authenticated:
@@ -101,7 +138,7 @@ def package_list(request):
     except Exception as exception:
         error = "Something went wrong. If error occurs often please send error message contained below to administator."
         error_message = str(exception)
-        return render(request, 'error.html', {'em':error_message, 'e':error})
+        return render(request, 'error.html', {'em':error_message, 'e':error})    
 
 def removedpackages_list(request):
      if request.user.is_superuser:
@@ -138,6 +175,26 @@ def deliveredpackages_list(request):
                 packages = paginator.page(paginator.num_pages)
 
             return render(request, 'delivered_packages.html', {'packages':packages})
+        except Exception as exception:
+            error = "Something went wrong. If error occurs often please send error message contained below to administator."
+            error_message = str(exception)
+            return render(request, 'error.html', {'em':error_message, 'e':error})
+
+def changedpackages_list(request):
+     if request.user.is_superuser:
+        try: 
+            package_list = PackageChange.objects.all()
+            page = request.GET.get('page', 1)
+
+            paginator = Paginator(package_list, 5)
+            try:
+                packages = paginator.page(page)
+            except PageNotAnInteger:
+                packages = paginator.page(1)
+            except EmptyPage:
+                packages = paginator.page(paginator.num_pages)
+
+            return render(request, 'package_changes.html', {'packages':packages})
         except Exception as exception:
             error = "Something went wrong. If error occurs often please send error message contained below to administator."
             error_message = str(exception)
@@ -220,3 +277,29 @@ def deliveredpackages_searchlist(request):
             error = "Something went wrong. If error occurs often please send error message contained below to administator."
             error_message = str(exception)
             return render(request, 'error.html', {'em':error_message, 'e':error})            
+
+def changedpackages_searchlist(request):
+    if request.user.is_superuser:
+        try:
+            query = request.GET.get('q')
+            package_list = PackageChange.objects.filter(
+                Q(name__icontains=query) | Q(package_type__type_name__icontains=query) | Q(package_destination__icontains=query) | Q(package_sizes__icontains=query)
+            )
+            
+            page = request.GET.get('page', 1)
+            paginator = Paginator(package_list, 5)
+
+            try:
+                packages = paginator.page(page)
+                for package in packages:
+                    print(package, packages)
+            except PageNotAnInteger:
+                packages = paginator.page(1)
+            except EmptyPage:
+                packages = paginator.page(paginator.num_pages)
+                
+            return render(request, 'search_changedpackages.html', { 'searchresults': packages })
+        except Exception as exception:
+            error = "Something went wrong. If error occurs often please send error message contained below to administator."
+            error_message = str(exception)
+            return render(request, 'error.html', {'em':error_message, 'e':error})      

@@ -40,6 +40,11 @@ class PackageAdd(ModelForm):
         model = Package
         fields = ['name', 'package_type', 'package_destination', 'package_sizes']
 
+class PackageEdit(ModelForm):
+    class Meta:
+        model = Package
+        fields = ['package_type', 'package_destination', 'package_sizes']
+
 class RemovedPackage(PackageAbstract):
     name = models.CharField(max_length=50, unique=False)
     create_date = models.DateTimeField()
@@ -50,6 +55,8 @@ class PackageChangeAbstract(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     create_date = models.DateTimeField()
+    package_name = models.CharField(max_length=50, null=True)
+    package_type = models.ForeignKey(PackageType, on_delete=models.PROTECT)
     package_destination = models.CharField(max_length=50, null=True)
     package_sizes = models.CharField(max_length=50, null=True)
 
