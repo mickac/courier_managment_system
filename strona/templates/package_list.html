@@ -48,7 +48,8 @@
                                                 <label for="date">Package added on <b>{{ package.create_date }}</b>.</label><br>
                                                 <label for="type">Package type is <b>{{ package.package_type }}</b>.</label><br>
                                                 <label for="size">Package size is <b>{{ package.package_sizes }}</b>.</label><br>
-                                                <label for="destination">Package destination is: <br><b>{{ package.package_destination }}</b></label>
+                                                <label for="destination">Package destination is: <br><b>{{ package.package_destination }}</b></label><br>
+                                                <label for="status">Package status is: <br><b>{{ package.get_status_display }}</b></label>
                                         </div>
                                     </div>
                                     <div class="modal-footer">

@@ -25,6 +25,13 @@ class PackageAbstract(models.Model):
         return self.name
 
 class Package(PackageAbstract):
+    STATUS_CHOICES = (
+        ('NDY','Not Deposited Yet'),
+        ('DP','Depository'),
+        ('IT','In Transit'),
+        ('DE','Delivering'),
+    )
+    status = models.CharField(max_length=3, choices=STATUS_CHOICES, default='NDY')
     create_date = models.DateTimeField(auto_now_add=True)
 
     class Meta(PackageAbstract.Meta):
