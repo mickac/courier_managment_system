@@ -13,6 +13,7 @@ djangorestframework = "*"
 django-bootstrap-modal-forms = "*"
 django-rest-framework = "*"
 django-crispy-forms = "*"
+django-ssh-deployer = "*"
 
 [requires]
 python_version = "3.8"

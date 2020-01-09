@@ -50,7 +50,7 @@ class PackageAdd(ModelForm):
 class PackageEdit(ModelForm):
     class Meta:
         model = Package
-        fields = ['package_type', 'package_destination', 'package_sizes']
+        fields = ['package_type', 'package_destination', 'package_sizes','status']
 
 class RemovedPackage(PackageAbstract):
     name = models.CharField(max_length=50, unique=False)
