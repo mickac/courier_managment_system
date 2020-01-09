@@ -66,6 +66,7 @@ class PackageChangeAbstract(models.Model):
     package_type = models.ForeignKey(PackageType, on_delete=models.PROTECT)
     package_destination = models.CharField(max_length=50, null=True)
     package_sizes = models.CharField(max_length=50, null=True)
+    status = models.CharField(max_length=10)
 
     class Meta:
         abstract = True

@@ -37,6 +37,7 @@
                     <th>Package type</th>
                     <th>Package destination</th>
                     <th>Package sizes</th>
+                    <th>Status</th>
                     <th>Edit date</th>
                     </tr>
                 </thead>
@@ -48,12 +49,14 @@
                     <td>{{ package.package_type }}</td>
                     <td>{{ package.package_destination }}</td>
                     <td>{{ package.package_sizes }}</td>
+                    <td>{{ package.status }}</td>
                     <td>{{ package.create_date }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
+    </div>
     {% else %}
         <div class="col-sm">
             <p>There are no changes on packages found.</p>

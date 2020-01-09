@@ -66,6 +66,7 @@ def edit(request, pk):
                     package_type = form.cleaned_data['package_type']
                     package_destination = form.cleaned_data['package_destination']
                     package_sizes = form.cleaned_data['package_sizes']
+                    package_status = form.cleaned_data['status']
                     pack = form.save(commit=False)
                     pack.package_type = package_type
                     pack.package_destination = package_destination
@@ -79,6 +80,7 @@ def edit(request, pk):
                         package_type = package_type,
                         package_destination = package_destination,
                         package_sizes = package_sizes,
+                        status = package_status,
                     )
                     packageedit.save()
                     return redirect('strona:packagelist')
