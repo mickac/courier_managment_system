@@ -17,6 +17,7 @@ class PackageAbstract(models.Model):
     package_type = models.ForeignKey(PackageType, on_delete=models.PROTECT)
     package_destination = models.CharField(max_length=50, null=True)
     package_sizes = models.CharField(max_length=50, null=True)
+    email = models.CharField(max_length=50, null=True)
 
     class Meta:
         abstract = True
@@ -45,7 +46,7 @@ class DeliveredPackage(PackageAbstract):
 class PackageAdd(ModelForm):
     class Meta:
         model = Package
-        fields = ['name', 'package_type', 'package_destination', 'package_sizes']
+        fields = ['name', 'package_type', 'package_destination', 'package_sizes', 'email']
 
 class PackageEdit(ModelForm):
     class Meta:

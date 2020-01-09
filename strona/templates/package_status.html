@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    {% if package %}
+    <h3>Information about package {{ package.name }}:</h3>
+    <div class="col-sm">
+        <label for="date">Package added on <b>{{ package.create_date }}</b>.</label><br>
+        <label for="type">Package type is <b>{{ package.package_type }}</b>.</label><br>
+        <label for="size">Package size is <b>{{ package.package_sizes }}</b>.</label><br>
+        <label for="destination">Package destination is: <br><b>{{ package.package_destination }}</b></label><br>
+        <label for="status">Package status is: <br><b>{{ package.get_status_display }}</b></label>
+    </div>
+    {% endif %}
+    {% if nopackage %}
+    <h3>Package status:</h3>
+    <div class="col-sm">
+        Package has been delivered or isn't exist.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

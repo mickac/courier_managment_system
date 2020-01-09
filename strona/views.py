@@ -11,6 +11,8 @@ from django.core.paginator import(
     PageNotAnInteger
 )
 from django.db.models import Q
+from django.core.mail import send_mail
+from django.conf import settings
 
 from .models import(
     PackageAdd,
@@ -38,13 +40,26 @@ def package_add(request):
         if request.method == 'POST':
             form = PackageAdd(request.POST)
             if form.is_valid():
+                name = form.cleaned_data['name']
+                email = form.cleaned_data['email']
                 data = []
                 data.append(form.cleaned_data['name'])
                 data.append(form.cleaned_data['package_type'])
                 data.append(form.cleaned_data['package_destination'])
                 data.append(form.cleaned_data['package_sizes'])
+                data.append(form.cleaned_data['email'])
                 try:
                     add_package(data)
+                    package = Package.objects.get(name=name)
+                    package_link = 'http://127.0.0.1:8000/site/status/' + str(package.id)
+                    #request.META['SERVER_NAME']
+                    send_mail(
+                        'Information about package' ,
+                        'Package ' + name + ' has been added to our system. You can check current status and other details using this link: ' +package_link,
+                        settings.EMAIL_HOST_USER,
+                        [email],
+                        fail_silently=False,
+                    )
                     return redirect('strona:packagelist')
                 except Exception as exception:
                     error = "Something went wrong. If error occurs often please send error message contained below to administator."
@@ -54,6 +69,14 @@ def package_add(request):
             form = PackageAdd()
         return render(request, 'package_add.html', {'form':form})            
     return redirect('strona:packagelist')
+def status(request, pk):
+    try:
+        package = Package.objects.get(id=pk)
+        return render(request, 'package_status.html', { 'package': package })
+    except Exception as exception:
+        nopackage = 1
+        return render(request, 'package_status.html', { 'nopackage': nopackage })
+   
 
 def edit(request, pk):
     try:

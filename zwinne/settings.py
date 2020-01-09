@@ -145,3 +145,9 @@ STATIC_URL = '/static/'
 
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_REDIRECT_URL = 'home'
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = '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'
+EMAIL_USE_TLS = True

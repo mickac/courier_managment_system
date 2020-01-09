@@ -18,17 +18,20 @@ def add_package(data):
         package_type_name = data[1].text
         package_destination = data[2].text
         package_sizes = data[3].text
+        email = data[4].text
     except AttributeError:
         package_name = data[0]
         package_type_name = data[1]
         package_destination = data[2]
         package_sizes = data[3]
+        email = data[4]
 
     new_package = Package(
         name=package_name,
         package_type=package_type_name,
         package_destination=package_destination,
         package_sizes=package_sizes,
+        email=email,
     )
 
     new_package.save()
