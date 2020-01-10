@@ -20,7 +20,10 @@ from .models import(
     Package,
     RemovedPackage,
     DeliveredPackage,
-    PackageChange
+    PackageChange,
+    AddingStats,
+    DeliveringStats,
+    DeletingStats
 )
 from .api_operations import(
     add_package,
@@ -328,3 +331,36 @@ def changedpackages_searchlist(request):
             error = "Something went wrong. If error occurs often please send error message contained below to administator."
             error_message = str(exception)
             return render(request, 'error.html', {'em':error_message, 'e':error})      
+
+def addgraph(request):
+    if request.user.is_superuser:
+        try:
+            stats = AddingStats.objects.all() 
+            name = "added"
+            return render(request, 'package_graph.html', { 'stats': stats, 'name':name })
+        except Exception as exception:
+            error = "Something went wrong. If error occurs often please send error message contained below to administator."
+            error_message = str(exception)
+            return render(request, 'error.html', {'em':error_message, 'e':error})    
+
+def delivergraph(request):
+    if request.user.is_superuser:
+        try:
+            stats = DeliveringStats.objects.all() 
+            name = "delivered"
+            return render(request, 'package_graph.html', { 'stats': stats, 'name':name })
+        except Exception as exception:
+            error = "Something went wrong. If error occurs often please send error message contained below to administator."
+            error_message = str(exception)
+            return render(request, 'error.html', {'em':error_message, 'e':error})   
+
+def deletegraph(request):
+    if request.user.is_superuser:
+        try:
+            stats = DeletingStats.objects.all() 
+            name = "removed"
+            return render(request, 'package_graph.html', { 'stats': stats, 'name':name })
+        except Exception as exception:
+            error = "Something went wrong. If error occurs often please send error message contained below to administator."
+            error_message = str(exception)
+            return render(request, 'error.html', {'em':error_message, 'e':error})     

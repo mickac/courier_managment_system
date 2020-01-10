@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+{% if user.is_superuser %}
+    {% if stats %}
+    <div class="col-sm">
+        <h3>Graph for {{ name }} packages:</h3>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
+        <canvas id="bar-chart" width="800" height="450"></canvas>
+        <script>
+        new Chart(document.getElementById("bar-chart"), {
+        type: 'bar',
+        data: {
+        labels: [{% for i in stats %}"{{ i.date }}",{% endfor %}],
+        datasets: [
+            {
+            label: "Number of {{name}} packages",
+            backgroundColor: "#3e95cd",
+            data: [{% for i in stats %}{{ i.counter }},{% endfor %}]
+            }
+        ]
+        },
+        options: {
+        legend: { display: false },
+        title: {
+            display: true,
+            text: 'Number of {{name}} packages by day'
+        }
+        }
+        });
+        </script>
+    </div>
+    {% else %}
+    <div class="col-sm">
+        There is no data for this graph.
+    </div>
+    {% endif %}
+{% endif %}
+</div>
+{% endblock %}

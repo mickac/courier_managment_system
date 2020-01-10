@@ -20,5 +20,8 @@ urlpatterns = [
     path('removedpackagesearch', views.removedpackages_searchlist, name='removedpackagesearch'),
     path('deliveredpackagesearch', views.deliveredpackages_searchlist, name='deliveredpackagesearch'),
     path('changedpackagesearch', views.changedpackages_searchlist, name='changedpackagesearch'),
-    path('status/<int:pk>', views.status)
+    path('status/<int:pk>', views.status),
+    path('addgraph', views.addgraph, name='addgraph'),
+    path('deletegraph', views.deletegraph, name='deletegraph'),
+    path('delivergraph', views.delivergraph, name='delivergraph')
 ]
