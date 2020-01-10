@@ -88,7 +88,7 @@ class StatisticsAbstract(models.Model):
     
     class Meta:
         abstract = True
-        ordering = ['-date']
+        ordering = ['date']
     
     def __str__(self):
         return self.date    
