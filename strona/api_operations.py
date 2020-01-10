@@ -2,6 +2,7 @@ import datetime
 import time
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import F
 
 from .models import (
     PackageAdd,
@@ -9,7 +10,10 @@ from .models import (
     Package,
     RemovedPackage,
     PackageChange,
-    DeliveredPackage
+    DeliveredPackage,
+    AddingStats,
+    DeliveringStats,
+    DeletingStats,
 )
 
 def add_package(data):
@@ -33,7 +37,9 @@ def add_package(data):
         package_sizes=package_sizes,
         email=email,
     )
-
+    data = datetime.date.today()
+    AddingStats.objects.get_or_create(date = data)
+    AddingStats.objects.filter(date = data).update(counter = F('counter')+1)
     new_package.save()
 
 def remove_package(data):
@@ -61,6 +67,9 @@ def remove_package(data):
         )
         old_change.save()
         change.delete()
+    data = datetime.date.today()
+    DeletingStats.objects.get_or_create(date = data)
+    DeletingStats.objects.filter(date = data).update(counter = F('counter')+1)    
     package.delete()
 
 def deliver_package(data):
@@ -77,5 +86,8 @@ def deliver_package(data):
         package_destination=package.package_destination,
         create_date=package.create_date,
     )
+    data = datetime.date.today()
+    DeliveringStats.objects.get_or_create(date = data)
+    DeliveringStats.objects.filter(date = data).update(counter = F('counter')+1)
     delivered_package.save()
     package.delete()

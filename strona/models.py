@@ -81,3 +81,23 @@ class PackageChange(PackageChangeAbstract):
 
 class OldChange(PackageChangeAbstract):
     package = models.ForeignKey(RemovedPackage, on_delete=models.CASCADE)
+
+class StatisticsAbstract(models.Model):
+    date = models.CharField(max_length=15)
+    counter = models.SmallIntegerField(default=0)
+    
+    class Meta:
+        abstract = True
+        ordering = ['-date']
+    
+    def __str__(self):
+        return self.date    
+
+class AddingStats(StatisticsAbstract):
+    pass
+
+class DeliveringStats(StatisticsAbstract):
+    pass
+
+class DeletingStats(StatisticsAbstract):
+    pass

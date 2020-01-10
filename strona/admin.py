@@ -5,7 +5,10 @@ from .models import (
     PackageChange,
     OldChange,
     RemovedPackage,
-    DeliveredPackage
+    DeliveredPackage,
+    DeliveringStats,
+    AddingStats,
+    DeletingStats
 )
 
 # Register your models here.
@@ -15,3 +18,7 @@ admin.site.register(PackageChange)
 admin.site.register(OldChange)
 admin.site.register(RemovedPackage)
 admin.site.register(DeliveredPackage)
+admin.site.register(DeliveringStats)
+admin.site.register(AddingStats)
+admin.site.register(DeletingStats)
+
